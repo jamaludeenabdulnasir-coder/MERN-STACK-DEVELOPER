@@ -14,7 +14,7 @@ function Login() {
     const navigate = useNavigate()
 
     if (isLoggedIn()) {
-        return <Navigate to="/profile" replace />
+        return <Navigate to="/" replace />
     }
 
     const Handle_Login = async (event) => {
@@ -35,7 +35,7 @@ function Login() {
 
             if (login.status === 200) {
                 saveToken(login.data.token, remember)
-                navigate("/profile")
+                navigate("/")
             }
         } catch (err) {
             setError(err.response?.data?.message || "Login failed. Please try again.")
