@@ -1,7 +1,8 @@
 import axios from "axios";
+import { getToken, clearToken } from "./auth";
 
 const api = axios.create({
-  baseURL: "http://127.0.0.1:3000",
+  baseURL: "http://127.0.0.1:4000",
   timeout: 5000,
   headers: { "X-Custom-Header": "foobar" },
 });
@@ -9,11 +10,19 @@ const api = axios.create({
 // Add a request interceptor
 api.interceptors.request.use(
   function (config) {
-    // Do something before request is sent
+    const token = getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   function (error) {
-    // Do something with request error
+    if (error.response && error.response.status === 401) {
+      clearToken();
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
+    }
     return Promise.reject(error);
   }
 );
